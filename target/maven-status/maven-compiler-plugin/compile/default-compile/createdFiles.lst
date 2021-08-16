@@ -1,0 +1,8 @@
+model/enums/FacetaUsabilidade.class
+model/enums/FacetaUX.class
+model/PredominanteUsabilidade.class
+model/Postagem.class
+model/Dicionario.class
+service/Algoritmo.class
+MainApplication.class
+model/PredominanteUX.class

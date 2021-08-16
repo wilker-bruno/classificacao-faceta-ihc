@@ -1,0 +1,15 @@
+- Observações
+- Uma postagem pode ter um ou vários emojis diferentes
+- Uma postagem pode ter um ou vários emojis iguais
+- Um emoji pode estar associado a mais uma faceta, o texto influência na classificação
+- Um emoji pode estar associado a a um sentimento positivo ou negativo
+
+- Algoritmo
+- As facetas vão receber um valor de acordo com os emojis presentes na postagem
+- A faceta com maior valor será a predominante para classificação
+- Em caso de empate no valor, será considerada a faceta com mais emojis diferentes
+- Em caso de empate nos emojis, será considerada a faceta que vem primeiro na ordem alfabética
+
+- Problemas
+- A base de treinamento não contempla todos os emojis existente na base geral, fazendo com que algumas prus não sejam classificadas
+- Alguns emojis são contemplados, porém com suas variações, fazendo com que não sejam identificados em nenhuma faceta
