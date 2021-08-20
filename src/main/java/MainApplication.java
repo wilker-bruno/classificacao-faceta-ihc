@@ -10,8 +10,14 @@ public class MainApplication {
         String VALIDACAO_3 = "bases/combinacao-3/BaseValidacao.csv";
         String TREINAMENTO_3 = "bases/combinacao-3/BaseTreinamento.csv";
 
-        algoritmo.construirDicionario(TREINAMENTO_2);
-        algoritmo.classificarPostagens(VALIDACAO_2);
+        algoritmo.analisarEmojisNasPostagens(TREINAMENTO_3);
+        algoritmo.mostrarEmojisMaisFrequentes();
+
+        algoritmo.construirDicionario(TREINAMENTO_3);
+        algoritmo.mostrarEmojisPorFacetaUX();
+        algoritmo.mostrarEmojisPorFacetaUsabilidade();
+
+//        algoritmo.classificarPostagens(VALIDACAO_2);
 
 //        System.out.println("Dicionario UX: " + algoritmo.getDicionario().getUx());
 //        System.out.println("Dicionario Usabilidade: " + algoritmo.getDicionario().getUsabilidade());

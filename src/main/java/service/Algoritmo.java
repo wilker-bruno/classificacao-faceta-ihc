@@ -12,14 +12,71 @@ import model.enums.FacetaUX;
 import model.enums.FacetaUsabilidade;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Getter
 public class Algoritmo {
+    private Integer contadorEmojis = 0;
     private final Dicionario dicionario = new Dicionario();
+    private final Map<String, Integer> emojis = new TreeMap<>();
+
+    public void analisarEmojisNasPostagens(String path) throws FileNotFoundException {
+        CsvToBean<Postagem> postagens = new CsvToBeanBuilder<Postagem>(new FileReader(path))
+                .withType(Postagem.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .build();
+
+        for (Postagem postagem : postagens) {
+            List<String> emojisExtraidos = EmojiParser.extractEmojis(postagem.getSentenca());
+            contadorEmojis += emojisExtraidos.size();
+
+            for (String emoji : emojisExtraidos) {
+                emojis.merge(emoji, 1, Integer::sum);
+            }
+        }
+    }
+
+    public void mostrarEmojisMaisFrequentes() {
+        Stream<Map.Entry<String, Integer>> sorted =
+                emojis.entrySet().stream()
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+
+        System.out.println("\n\n ------------------ EMOJIS DA BASE ------------------");
+        System.out.println("TOTAL DE EMOJIS = " + contadorEmojis);
+        System.out.println("TOTAL DE EMOJIS ÙNICOS = " + emojis.keySet().size());
+
+        AtomicInteger count = new AtomicInteger();
+        sorted.forEach(element -> {
+            count.addAndGet(element.getValue());
+            System.out.print(element + " ");
+        });
+
+        System.out.println("-----------------> " + count);
+    }
+
+    public void mostrarEmojisPorFacetaUX() {
+        System.out.print("\n\n ------------------ FACETAS DE UX ------------------");
+        for (Map.Entry<FacetaUX, HashMap<String, Integer>> mapUX : dicionario.getUx().entrySet()) {
+            Stream<Map.Entry<String, Integer>> sorted = mapUX.getValue().entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+
+            System.out.println("\n" + mapUX.getKey().name());
+            sorted.forEach(stringIntegerEntry -> System.out.print(stringIntegerEntry + " "));
+        }
+
+    }
+
+    public void mostrarEmojisPorFacetaUsabilidade() {
+        System.out.print("\n\n ------------------ FACETAS DE USABILIDADE ------------------");
+        for (Map.Entry<FacetaUsabilidade, HashMap<String, Integer>> mapUsabilidade : dicionario.getUsabilidade().entrySet()) {
+            Stream<Map.Entry<String, Integer>> sorted = mapUsabilidade.getValue().entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+
+            System.out.println("\n" + mapUsabilidade.getKey().name());
+            sorted.forEach(stringIntegerEntry -> System.out.print(stringIntegerEntry + " "));
+        }
+
+    }
 
     public void construirDicionario(String path) throws FileNotFoundException {
         CsvToBean<Postagem> postagens = new CsvToBeanBuilder<Postagem>(new FileReader(path))
@@ -65,7 +122,7 @@ public class Algoritmo {
                 if (entry.getValue() > qntd) {
                     ux = entry.getKey();
                     qntd = entry.getValue();
-                    postagem.setFacetaUxAtribuida(entry.getKey() != null ? entry.getKey().toString() : "");
+                    postagem.setFacetaUxAtribuida(entry.getKey() != null ? entry.getKey().toString() : "null");
                 }
             }
 
@@ -79,7 +136,7 @@ public class Algoritmo {
                 if (entry.getValue() > qntd) {
                     usabilidade = entry.getKey();
                     qntd = entry.getValue();
-                    postagem.setFacetaUsabilidadeAtribuida(entry.getKey() != null ? entry.getKey().toString() : "");
+                    postagem.setFacetaUsabilidadeAtribuida(entry.getKey() != null ? entry.getKey().toString() : "null");
                 }
             }
 
